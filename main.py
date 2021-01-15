@@ -14,7 +14,16 @@ profile = Profile(
 )
 
 trip = Trip(date=datetime.now(),
-            reasons=[TripReason.achats, TripReason.travail])
+            reasons=[
+                TripReason.travail,
+                TripReason.sante,
+                TripReason.famille,
+                TripReason.handicap,
+                TripReason.convocation,
+                TripReason.missions,
+                TripReason.transits,
+                TripReason.animaux
+            ])
 
 
 def main():

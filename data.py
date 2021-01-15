@@ -2,15 +2,14 @@ from enum import Enum
 
 
 class TripReason(Enum):
-    travail = 553
-    achats = 482
-    sante = 434
-    famille = 410
-    handicap = 373
-    sport_animaux = 349
-    convocation = 276
-    missions = 252
-    enfants = 228
+    travail = 540
+    sante = 508
+    famille = 474
+    handicap = 441
+    convocation = 418
+    missions = 397
+    transits = 363
+    animaux = 330
 
 
 class Trip:
