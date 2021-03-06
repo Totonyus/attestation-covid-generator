@@ -19,10 +19,14 @@ trip = Trip(date=datetime.now(),
                 TripReason.sante,
                 TripReason.famille,
                 TripReason.handicap,
-                TripReason.convocation,
+                TripReason.judiciaire,
                 TripReason.missions,
-                TripReason.transits,
-                TripReason.animaux
+                TripReason.transit,
+                TripReason.animaux,
+                TripReason.courses,
+                TripReason.sport,
+                TripReason.rassemblement,
+                TripReason.demarche
             ])
 
 

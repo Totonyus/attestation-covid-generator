@@ -26,13 +26,13 @@ def make_data_layer(profile, trip):
     canvas = Canvas(tempfile.TemporaryFile())
     canvas.setFont("Helvetica", 11)
 
-    canvas.drawString(119, 665, "%s %s" % (profile.firstname, profile.lastname))
-    canvas.drawString(119, 645, profile.birthday)
-    canvas.drawString(312, 645, profile.placeofbirth)
-    canvas.drawString(133, 625, "%s %s %s" % (profile.address, profile.zipcode, profile.city))
+    canvas.drawString(144, 705, "%s %s" % (profile.firstname, profile.lastname))
+    canvas.drawString(144, 684, profile.birthday)
+    canvas.drawString(310, 684, profile.placeofbirth)
+    canvas.drawString(144, 665, "%s %s %s" % (profile.address, profile.zipcode, profile.city))
 
-    canvas.drawString(91, 267, trip.date.strftime("%d/%m/%Y"))
-    canvas.drawString(312, 267, trip.date.strftime("%H:%M"))
+    canvas.drawString(91, 95, trip.date.strftime("%d/%m/%Y"))
+    canvas.drawString(310, 95, trip.date.strftime("%H:%M"))
 
     location_size = get_ideal_font_size(canvas, profile.city)
     if location_size == 0:
@@ -40,11 +40,11 @@ def make_data_layer(profile, trip):
         print('Essayez d\'utiliser des abréviations ("Saint" en "St." par exemple) quand cela est possible.')
         location_size = 7
     canvas.setFont("Helvetica", location_size)
-    canvas.drawString(105, 286, profile.city)
+    canvas.drawString(102, 112, profile.city)
 
     canvas.setFont("Helvetica", 12)
     for reason in trip.reasons:
-        canvas.drawString(73, reason.value, "x")
+        canvas.drawString(72, reason.value, "x")
 
     #canvas.setFont("Helvetica", 9)
     #canvas.setFillColorRGB(1,1,1)
@@ -52,14 +52,14 @@ def make_data_layer(profile, trip):
 
     qr_path = qr.generateQR(profile, trip)
 
-    canvas.drawImage(qr_path, canvas._pagesize[0] - 156, 125, 92, 92)
+    canvas.drawImage(qr_path, canvas._pagesize[0] - 107, 660, 82, 82)
 
     canvas.showPage()
 
     #canvas.setFont("Helvetica", 11)
     #canvas.drawString(415, canvas._pagesize[1] - 70, 'QR-code contenant les informations\nde votre attestation numérique')
 
-    canvas.drawImage(qr_path, 50, canvas._pagesize[1] - 350, 300, 300)
+    canvas.drawImage(qr_path, 50, canvas._pagesize[1] - 390, 300, 300)
 
     if os.path.exists(qr_path):
         os.remove(qr_path)
