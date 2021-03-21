@@ -1,7 +1,22 @@
 from enum import Enum
 
 
-class TripReason(Enum):
+class CurfewTripReason(Enum):
+    travail = 579
+    sante = 546
+    famille = 512
+    handicap = 478
+    judiciaire = 459
+    missions = 438
+    transit = 404
+    animaux = 370
+    courses = 304
+    sport = 261
+    rassemblement = 190
+    demarche = 145
+
+
+class LockdownTripReason(Enum):
     travail = 579
     sante = 546
     famille = 512

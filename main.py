@@ -1,7 +1,9 @@
 from datetime import datetime
 
-from certificate import Certificate
-from data import TripReason, Trip, Profile
+from lockdowncertificate import LockdownCertificate
+from curfewcertificate import CurfewCertificate
+
+from data import CurfewTripReason, LockdownTripReason, Trip, Profile
 
 profile = Profile(
     firstname="Jean",
@@ -13,26 +15,44 @@ profile = Profile(
     city="Paris"
 )
 
-trip = Trip(date=datetime.now(),
+ctrip = Trip(date=datetime.now(),
             reasons=[
-                TripReason.travail,
-                TripReason.sante,
-                TripReason.famille,
-                TripReason.handicap,
-                TripReason.judiciaire,
-                TripReason.missions,
-                TripReason.transit,
-                TripReason.animaux,
-                TripReason.courses,
-                TripReason.sport,
-                TripReason.rassemblement,
-                TripReason.demarche
+                CurfewTripReason.travail,
+                CurfewTripReason.sante,
+                CurfewTripReason.famille,
+                CurfewTripReason.handicap,
+                CurfewTripReason.judiciaire,
+                CurfewTripReason.missions,
+                CurfewTripReason.transit,
+                CurfewTripReason.animaux,
+                CurfewTripReason.courses,
+                CurfewTripReason.sport,
+                CurfewTripReason.rassemblement,
+                CurfewTripReason.demarche
             ])
 
+ltrip = Trip(date=datetime.now(),
+             reasons=[
+                 LockdownTripReason.travail,
+                 LockdownTripReason.sante,
+                 LockdownTripReason.famille,
+                 LockdownTripReason.handicap,
+                 LockdownTripReason.judiciaire,
+                 LockdownTripReason.missions,
+                 LockdownTripReason.transit,
+                 LockdownTripReason.animaux,
+                 LockdownTripReason.courses,
+                 LockdownTripReason.sport,
+                 LockdownTripReason.rassemblement,
+                 LockdownTripReason.demarche
+             ])
 
 def main():
-    c = Certificate(profile, trip)
-    c.save(directory="tests")
+    lc = LockdownCertificate(profile, ltrip)
+    lc.save(directory="tests")
+
+    cc = CurfewCertificate(profile, ctrip)
+    cc.save(directory="tests")
 
 
 if __name__ == "__main__":

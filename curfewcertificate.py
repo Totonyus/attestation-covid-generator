@@ -7,20 +7,9 @@ from PyPDF2 import PdfFileReader, PdfFileWriter
 from reportlab.pdfgen.canvas import Canvas
 
 import qr
+from utils import get_ideal_font_size
 
-BASE_CERTIFICATE = os.path.join("data", "certificate.pdf")
-
-
-def get_ideal_font_size(canvas: Canvas, text, font="Helvetica", max_width=83, min_size=7, default_size=11):
-    current_size = default_size
-    text_width = canvas.stringWidth(text, fontName=font, fontSize=default_size)
-
-    while text_width > max_width and current_size > min_size:
-        current_size -= 1
-        text_width = canvas.stringWidth(text, fontName=font, fontSize=current_size)
-
-    return 0 if text_width > max_width else current_size
-
+BASE_CERTIFICATE = os.path.join("data", "certificate_curfew.pdf")
 
 def make_data_layer(profile, trip):
     canvas = Canvas(tempfile.TemporaryFile())
@@ -70,7 +59,7 @@ def make_data_layer(profile, trip):
     return stream
 
 
-class Certificate:
+class CurfewCertificate:
     def __init__(self, profile, trip):
         self._profile = profile
         self._trip = trip
@@ -108,7 +97,7 @@ class Certificate:
         })
 
         # Write PDF file
-        output_stream_filename = self._trip.date.strftime("attestation-%Y-%m-%d_%H-%M.pdf")
+        output_stream_filename = self._trip.date.strftime("curfew_attestation-%Y-%m-%d_%H-%M.pdf")
         filename = os.path.join(directory, output_stream_filename)
         output_stream = open(filename, "wb")
         output.write(output_stream)
