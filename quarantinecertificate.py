@@ -9,49 +9,54 @@ from reportlab.pdfgen.canvas import Canvas
 import qr
 from utils import get_ideal_font_size
 
-BASE_CERTIFICATE = os.path.join("data", "certificate_lockdown.pdf")
+BASE_CERTIFICATE = os.path.join("data", "quarantine-certificate.pdf")
 
 def make_data_layer(profile, trip):
     canvas = Canvas(tempfile.TemporaryFile())
     canvas.setFont("Helvetica", 11)
 
-    canvas.drawString(144, 705, "%s %s" % (profile.firstname, profile.lastname))
-    canvas.drawString(144, 684, profile.birthday)
-    canvas.drawString(310, 684, profile.placeofbirth)
-    canvas.drawString(144, 665, "%s %s %s" % (profile.address, profile.zipcode, profile.city))
-
-    canvas.drawString(91, 95, trip.date.strftime("%d/%m/%Y"))
-    canvas.drawString(310, 95, trip.date.strftime("%H:%M"))
+    canvas.drawString(111, 516, "%s %s" % (profile.firstname, profile.lastname))
+    canvas.drawString(111, 501, profile.birthday)
+    canvas.drawString(228, 501, profile.placeofbirth)
+    canvas.drawString(126, 487, "%s %s %s" % (profile.address, profile.zipcode, profile.city))
 
     location_size = get_ideal_font_size(canvas, profile.city)
+
     if location_size == 0:
         print('Le nom de la ville risque de ne pas être affiché correctement en raison de sa longueur.')
         print('Essayez d\'utiliser des abréviations ("Saint" en "St." par exemple) quand cela est possible.')
         location_size = 7
     canvas.setFont("Helvetica", location_size)
-    canvas.drawString(102, 112, profile.city)
+
 
     canvas.setFont("Helvetica", 12)
     for reason in trip.reasons:
-        canvas.drawString(72, reason.value, "x")
-
-    #canvas.setFont("Helvetica", 9)
-    #canvas.setFillColorRGB(1,1,1)
-    #canvas.drawString(415, 135, 'QR-code contenant les informations\nde votre attestation numérique')
+        if reason.value.get('page') == 1:
+            canvas.drawString(60, reason.value.get('y'), "x")
 
     qr_path = qr.generateQR(profile, trip)
 
-    canvas.drawImage(qr_path, canvas._pagesize[0] - 107, 660, 82, 82)
-
     canvas.showPage()
 
-    #canvas.setFont("Helvetica", 11)
-    #canvas.drawString(415, canvas._pagesize[1] - 70, 'QR-code contenant les informations\nde votre attestation numérique')
+    canvas.drawImage(qr_path, canvas._pagesize[0] - 107, 80, 82, 82)
+
+    for reason in trip.reasons:
+        if reason.value.get('page') == 2:
+            canvas.drawString(60, reason.value.get('y'), "x")
+
+    canvas.setFont("Helvetica", 11)
+    canvas.drawString(72, 99, f'Fait à {profile.city}')
+    canvas.drawString(72, 83, f'Le {trip.date.strftime("%d/%m/%Y")}')
+    canvas.drawString(310, 83, f'à {trip.date.strftime("%H:%M")}')
+    canvas.drawString(72, 67, '(Date et heure de début de sortie à mentionner obligatoirement)')
+
+    canvas.showPage()
 
     canvas.drawImage(qr_path, 50, canvas._pagesize[1] - 390, 300, 300)
 
     if os.path.exists(qr_path):
         os.remove(qr_path)
+
 
     stream = io.BytesIO()
     stream.write(canvas.getpdfdata())
@@ -59,7 +64,7 @@ def make_data_layer(profile, trip):
     return stream
 
 
-class LockdownCertificate:
+class QuarantineCertificate:
     def __init__(self, profile, trip):
         self._profile = profile
         self._trip = trip
@@ -68,19 +73,24 @@ class LockdownCertificate:
         # Open certificate template and get the first page
         base = PdfFileReader(open(BASE_CERTIFICATE, "rb"), strict=False)
         base0 = base.getPage(0)
+        base1 = base.getPage(1)
 
         # Create a PDF data page with profile and trip data
         data = PdfFileReader(make_data_layer(self._profile, self._trip), strict=False)
         data0 = data.getPage(0)
         data1 = data.getPage(1)
+        data2 = data.getPage(2)
+
 
         # Merge data page with template page
         base0.mergePage(data0)
+        base1.mergePage(data1)
 
         # Create output PDF and add created pages
         output = PdfFileWriter()
         output.addPage(base0)
-        output.addPage(data1)
+        output.addPage(base1)
+        output.addPage(data2)
 
         # Update PDF metadata
         utcdate = self._trip.date.astimezone(pytz.utc)

@@ -1,9 +1,9 @@
 from datetime import datetime
 
-from lockdowncertificate import LockdownCertificate
+from quarantinecertificate import QuarantineCertificate
 from curfewcertificate import CurfewCertificate
 
-from data import CurfewTripReason, LockdownTripReason, Trip, Profile
+from data import CurfewTripReason, QuarantineTripReason, Trip, Profile
 
 profile = Profile(
     firstname="Jean",
@@ -16,43 +16,40 @@ profile = Profile(
 )
 
 ctrip = Trip(date=datetime.now(),
-            reasons=[
-                CurfewTripReason.travail,
-                CurfewTripReason.sante,
-                CurfewTripReason.famille,
-                CurfewTripReason.handicap,
-                CurfewTripReason.judiciaire,
-                CurfewTripReason.missions,
-                CurfewTripReason.transit,
-                CurfewTripReason.animaux,
-                CurfewTripReason.courses,
-                CurfewTripReason.sport,
-                CurfewTripReason.rassemblement,
-                CurfewTripReason.demarche
-            ])
+             reasons=[
+                 CurfewTripReason.travail,
+                 CurfewTripReason.sante,
+                 CurfewTripReason.famille,
+                 CurfewTripReason.handicap,
+                 CurfewTripReason.judiciaire,
+                 CurfewTripReason.missions,
+                 CurfewTripReason.transit,
+                 CurfewTripReason.animaux,
+             ])
 
 ltrip = Trip(date=datetime.now(),
              reasons=[
-                 LockdownTripReason.travail,
-                 LockdownTripReason.sante,
-                 LockdownTripReason.famille,
-                 LockdownTripReason.handicap,
-                 LockdownTripReason.judiciaire,
-                 LockdownTripReason.missions,
-                 LockdownTripReason.transit,
-                 LockdownTripReason.animaux,
-                 LockdownTripReason.courses,
-                 LockdownTripReason.sport,
-                 LockdownTripReason.rassemblement,
-                 LockdownTripReason.demarche
+                 QuarantineTripReason.sport,
+                 QuarantineTripReason.achats,
+                 QuarantineTripReason.enfants,
+                 QuarantineTripReason.culte_culturel,
+                 QuarantineTripReason.demarche,
+                 QuarantineTripReason.travail,
+                 QuarantineTripReason.sante,
+                 QuarantineTripReason.famille,
+                 QuarantineTripReason.handicap,
+                 QuarantineTripReason.judiciaire,
+                 QuarantineTripReason.demenagement,
+                 QuarantineTripReason.transit,
              ])
 
+
 def main():
-    lc = LockdownCertificate(profile, ltrip)
+    lc = QuarantineCertificate(profile, ltrip)
     lc.save(directory="tests")
 
-    cc = CurfewCertificate(profile, ctrip)
-    cc.save(directory="tests")
+    # cc = CurfewCertificate(profile, ctrip)
+    # cc.save(directory="tests")
 
 
 if __name__ == "__main__":

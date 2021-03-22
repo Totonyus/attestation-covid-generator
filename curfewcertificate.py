@@ -9,7 +9,7 @@ from reportlab.pdfgen.canvas import Canvas
 import qr
 from utils import get_ideal_font_size
 
-BASE_CERTIFICATE = os.path.join("data", "certificate_curfew.pdf")
+BASE_CERTIFICATE = os.path.join("data", "curfew-certificate.pdf")
 
 def make_data_layer(profile, trip):
     canvas = Canvas(tempfile.TemporaryFile())
@@ -20,33 +20,26 @@ def make_data_layer(profile, trip):
     canvas.drawString(310, 684, profile.placeofbirth)
     canvas.drawString(144, 665, "%s %s %s" % (profile.address, profile.zipcode, profile.city))
 
-    canvas.drawString(91, 95, trip.date.strftime("%d/%m/%Y"))
-    canvas.drawString(310, 95, trip.date.strftime("%H:%M"))
-
     location_size = get_ideal_font_size(canvas, profile.city)
     if location_size == 0:
         print('Le nom de la ville risque de ne pas être affiché correctement en raison de sa longueur.')
         print('Essayez d\'utiliser des abréviations ("Saint" en "St." par exemple) quand cela est possible.')
         location_size = 7
     canvas.setFont("Helvetica", location_size)
-    canvas.drawString(102, 112, profile.city)
+
+    canvas.drawString(72, 109, f'Fait à {profile.city}')
+    canvas.drawString(72, 93, f'Le {trip.date.strftime("%d/%m/%Y")}')
+    canvas.drawString(310, 93, f'à {trip.date.strftime("%H:%M")}')
 
     canvas.setFont("Helvetica", 12)
     for reason in trip.reasons:
-        canvas.drawString(72, reason.value, "x")
-
-    #canvas.setFont("Helvetica", 9)
-    #canvas.setFillColorRGB(1,1,1)
-    #canvas.drawString(415, 135, 'QR-code contenant les informations\nde votre attestation numérique')
+        canvas.drawString(73, reason.value.get('y'), "x")
 
     qr_path = qr.generateQR(profile, trip)
 
-    canvas.drawImage(qr_path, canvas._pagesize[0] - 107, 660, 82, 82)
+    canvas.drawImage(qr_path, canvas._pagesize[0] - 107, 80, 82, 82)
 
     canvas.showPage()
-
-    #canvas.setFont("Helvetica", 11)
-    #canvas.drawString(415, canvas._pagesize[1] - 70, 'QR-code contenant les informations\nde votre attestation numérique')
 
     canvas.drawImage(qr_path, 50, canvas._pagesize[1] - 390, 300, 300)
 
