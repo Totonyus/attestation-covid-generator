@@ -46,10 +46,10 @@ ltrip = Trip(date=datetime.now(),
 
 def main():
     lc = QuarantineCertificate(profile, ltrip)
-    lc.save(directory="tests")
+    lc.save(directory="tests_quarantine")
 
-    #cc = CurfewCertificate(profile, ctrip)
-    #cc.save(directory="tests")
+    cc = CurfewCertificate(profile, ctrip)
+    cc.save(directory="tests_curfew")
 
 
 if __name__ == "__main__":
