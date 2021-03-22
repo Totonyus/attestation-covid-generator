@@ -7,7 +7,6 @@ from PyPDF2 import PdfFileReader, PdfFileWriter
 from reportlab.pdfgen.canvas import Canvas
 
 import qr
-from utils import get_ideal_font_size
 
 BASE_CERTIFICATE = os.path.join("data", "quarantine-certificate.pdf")
 
@@ -19,15 +18,6 @@ def make_data_layer(profile, trip):
     canvas.drawString(111, 501, profile.birthday)
     canvas.drawString(228, 501, profile.placeofbirth)
     canvas.drawString(126, 487, "%s %s %s" % (profile.address, profile.zipcode, profile.city))
-
-    location_size = get_ideal_font_size(canvas, profile.city)
-
-    if location_size == 0:
-        print('Le nom de la ville risque de ne pas être affiché correctement en raison de sa longueur.')
-        print('Essayez d\'utiliser des abréviations ("Saint" en "St." par exemple) quand cela est possible.')
-        location_size = 7
-    canvas.setFont("Helvetica", location_size)
-
 
     canvas.setFont("Helvetica", 12)
     for reason in trip.reasons:
@@ -56,7 +46,6 @@ def make_data_layer(profile, trip):
 
     if os.path.exists(qr_path):
         os.remove(qr_path)
-
 
     stream = io.BytesIO()
     stream.write(canvas.getpdfdata())
@@ -100,14 +89,14 @@ class QuarantineCertificate:
             '/Author'      : "Ministère de l'intérieur",
             '/Creator'     : '',
             '/Producer'    : 'DNUM/SDIT',
-            '/CreationDate': "D:20210106195521+01'00'",
+            '/CreationDate': "D:20210321130838+01'00'",
             '/ModDate'     : utcdate.strftime("D:%Y%m%d%H%M%SZ"),
             '/Subject'     : 'Attestation de déplacement dérogatoire',
             '/Keywords'    : 'covid19 covid-19 attestation déclaration déplacement officielle gouvernement'
         })
 
         # Write PDF file
-        output_stream_filename = self._trip.date.strftime("lockdown_attestation-%Y-%m-%d_%H-%M.pdf")
+        output_stream_filename = self._trip.date.strftime("attestation-%Y-%m-%d_%H-%M.pdf")
         filename = os.path.join(directory, output_stream_filename)
         output_stream = open(filename, "wb")
         output.write(output_stream)

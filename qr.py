@@ -23,7 +23,7 @@ def generateQR(profile, trip):
         "Naissance: %s a %s" % (profile.birthday, profile.placeofbirth),
         "Adresse: %s %s %s" % (profile.address, profile.zipcode, profile.city),
         "Sortie: %s a %s" % (trip.date.strftime("%d/%m/%Y"), trip.date.strftime("%H:%M")),
-        "Motifs: %s;" % ", ".join([str(x)[11:] for x in trip.reasons])
+        "Motifs: %s;" % ", ".join([str(x).split('.')[1] for x in trip.reasons])
     ])
 
     q.add_data(textdata)

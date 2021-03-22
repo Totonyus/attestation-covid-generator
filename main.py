@@ -48,8 +48,8 @@ def main():
     lc = QuarantineCertificate(profile, ltrip)
     lc.save(directory="tests")
 
-    # cc = CurfewCertificate(profile, ctrip)
-    # cc.save(directory="tests")
+    #cc = CurfewCertificate(profile, ctrip)
+    #cc.save(directory="tests")
 
 
 if __name__ == "__main__":

@@ -7,7 +7,6 @@ from PyPDF2 import PdfFileReader, PdfFileWriter
 from reportlab.pdfgen.canvas import Canvas
 
 import qr
-from utils import get_ideal_font_size
 
 BASE_CERTIFICATE = os.path.join("data", "curfew-certificate.pdf")
 
@@ -19,13 +18,6 @@ def make_data_layer(profile, trip):
     canvas.drawString(144, 684, profile.birthday)
     canvas.drawString(310, 684, profile.placeofbirth)
     canvas.drawString(144, 665, "%s %s %s" % (profile.address, profile.zipcode, profile.city))
-
-    location_size = get_ideal_font_size(canvas, profile.city)
-    if location_size == 0:
-        print('Le nom de la ville risque de ne pas être affiché correctement en raison de sa longueur.')
-        print('Essayez d\'utiliser des abréviations ("Saint" en "St." par exemple) quand cela est possible.')
-        location_size = 7
-    canvas.setFont("Helvetica", location_size)
 
     canvas.drawString(72, 109, f'Fait à {profile.city}')
     canvas.drawString(72, 93, f'Le {trip.date.strftime("%d/%m/%Y")}')
@@ -83,14 +75,14 @@ class CurfewCertificate:
             '/Author'      : "Ministère de l'intérieur",
             '/Creator'     : '',
             '/Producer'    : 'DNUM/SDIT',
-            '/CreationDate': "D:20210106195521+01'00'",
+            '/CreationDate': "D:20210320065838+01'00'",
             '/ModDate'     : utcdate.strftime("D:%Y%m%d%H%M%SZ"),
             '/Subject'     : 'Attestation de déplacement dérogatoire',
             '/Keywords'    : 'covid19 covid-19 attestation déclaration déplacement officielle gouvernement'
         })
 
         # Write PDF file
-        output_stream_filename = self._trip.date.strftime("curfew_attestation-%Y-%m-%d_%H-%M.pdf")
+        output_stream_filename = self._trip.date.strftime("attestation-%Y-%m-%d_%H-%M.pdf")
         filename = os.path.join(directory, output_stream_filename)
         output_stream = open(filename, "wb")
         output.write(output_stream)
